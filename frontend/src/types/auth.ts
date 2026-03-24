@@ -59,6 +59,7 @@ export interface WorkLogItem {
   projectName?: string
   taskType?: string
   priorityLevel?: string
+  moodScore?: number
   startTime?: string
   endTime?: string
   workHours: number
@@ -76,6 +77,7 @@ export interface WorkLogSavePayload {
   projectName?: string
   taskType?: string
   priorityLevel?: string
+  moodScore?: number
   startTime?: string
   endTime?: string
   tags?: string
@@ -87,6 +89,121 @@ export interface WorkLogStatistics {
   totalHours: number
   totalLogs: number
   projectHours: Array<{ projectName: string; hours: number }>
+}
+
+export interface WeeklyReport {
+  period: 'week' | 'month'
+  startDate: string
+  endDate: string
+  totalLogs: number
+  totalHours: string
+  summary: string
+  highlights: string[]
+  risks: string[]
+  nextPlans: string[]
+}
+
+export interface MoodPoint {
+  date: string
+  moodScore: number
+}
+
+export interface MoodTrend {
+  days: number
+  avgMood: string
+  lowestMoodDay?: MoodPoint
+  series: MoodPoint[]
+  advice: string[]
+}
+
+export interface SkillItem {
+  skill: string
+  mentionCount: number
+  relatedHours: string
+}
+
+export interface SkillPortrait {
+  days: number
+  topSkills: SkillItem[]
+  growthSuggestions: string[]
+}
+
+export interface ReviewAlertItem {
+  companyName: string
+  recentCount: number
+  currentAvg: string
+  previousAvg: string
+  dropRate: string
+  negativeRate: string
+  level: 'HIGH' | 'MEDIUM'
+}
+
+export interface ReviewAlertSummary {
+  days: number
+  totalWarnings: number
+  warnings: ReviewAlertItem[]
+}
+
+export interface SprintGoalItem {
+  id: number
+  userId: number
+  title: string
+  description?: string
+  relatedProject?: string
+  targetHours: string
+  completedHours: string
+  completionRate: string
+  status: 'OPEN' | 'DONE' | 'PAUSED'
+  startDate: string
+  endDate: string
+  createdAt: string
+  updatedAt: string
+}
+
+export interface SprintGoalSavePayload {
+  id?: number
+  title: string
+  description?: string
+  relatedProject?: string
+  targetHours: number
+  status?: 'OPEN' | 'DONE' | 'PAUSED'
+  startDate: string
+  endDate: string
+}
+
+export interface GoalBoard {
+  days: number
+  totalGoals: number
+  completedGoals: number
+  avgCompletionRate: string
+  goals: SprintGoalItem[]
+  highRiskGoals: SprintGoalItem[]
+}
+
+export interface RiskRadarItem {
+  source: string
+  level: 'LOW' | 'MEDIUM' | 'HIGH'
+  title: string
+  message: string
+  metric: string
+}
+
+export interface RiskRadar {
+  days: number
+  overallLevel: 'LOW' | 'MEDIUM' | 'HIGH'
+  overallScore: number
+  items: RiskRadarItem[]
+}
+
+export interface Retrospective {
+  period: 'week' | 'month'
+  startDate: string
+  endDate: string
+  theme: string
+  summary: string
+  whatWentWell: string[]
+  toImprove: string[]
+  nextActions: string[]
 }
 
 export interface CompanyReviewItem {
@@ -133,4 +250,26 @@ export interface ApiResponse<T> {
   code: number
   message: string
   data: T
+}
+
+export type AiRole = 'user' | 'assistant' | 'system'
+
+export interface AiMessage {
+  id: string
+  role: AiRole
+  content: string
+  createdAt: string
+}
+
+export interface AiSession {
+  id: string
+  title: string
+  messages: AiMessage[]
+  updatedAt: string
+}
+
+export interface AiChatRequestPayload {
+  sessionId: string
+  prompt: string
+  messages: Array<{ role: AiRole; content: string }>
 }

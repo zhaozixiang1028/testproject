@@ -28,14 +28,13 @@ const form = reactive<CompanyReviewSubmitPayload>({
   salaryScore: 4,
   balanceScore: 4,
   anonymousMode: true,
-  publicVisible: false,
+  publicVisible: true,
   reviewContent: '',
 })
 
 const tableState = reactive({
   keyword: '',
   status: '',
-  visibility: '',
   sortProp: 'createdAt',
   sortOrder: 'descending' as 'ascending' | 'descending',
   page: 1,
@@ -68,6 +67,7 @@ const submitReview = async () => {
     ElMessage.warning('请先输入公司名')
     return
   }
+  form.publicVisible = true
   try {
     if (editReviewId.value) {
       await updateReviewApi(editReviewId.value, form)
@@ -92,7 +92,7 @@ const editReview = (row: CompanyReviewItem) => {
   form.salaryScore = row.salaryScore
   form.balanceScore = row.balanceScore
   form.anonymousMode = row.anonymousMode === 1
-  form.publicVisible = row.publicVisible === 1
+  form.publicVisible = true
   form.reviewContent = row.reviewContent || ''
 }
 
@@ -105,7 +105,7 @@ const cancelEdit = () => {
   form.salaryScore = 4
   form.balanceScore = 4
   form.anonymousMode = true
-  form.publicVisible = false
+  form.publicVisible = true
   form.reviewContent = ''
 }
 
@@ -163,11 +163,8 @@ const filteredReviews = computed(() => {
       || (row.reviewContent || '').toLowerCase().includes(keyword)
 
     const statusMatch = !tableState.status || row.reviewStatus === tableState.status
-    const visibilityMatch = !tableState.visibility
-      || (tableState.visibility === 'PUBLIC' && row.publicVisible === 1)
-      || (tableState.visibility === 'PRIVATE' && row.publicVisible === 0)
 
-    return keywordMatch && statusMatch && visibilityMatch
+    return keywordMatch && statusMatch
   })
 })
 
@@ -229,7 +226,6 @@ const handlePageSizeChange = (value: number) => {
 const resetFilters = () => {
   tableState.keyword = ''
   tableState.status = ''
-  tableState.visibility = ''
   tableState.page = 1
 }
 
@@ -289,9 +285,6 @@ onMounted(() => {
           <el-form-item>
             <el-switch v-model="form.anonymousMode" inline-prompt active-text="匿名" inactive-text="实名" />
           </el-form-item>
-          <el-form-item>
-            <el-switch v-model="form.publicVisible" inline-prompt active-text="公开" inactive-text="仅本人" />
-          </el-form-item>
 
           <el-form-item label="补充评价">
             <el-input v-model="form.reviewContent" type="textarea" :rows="4" placeholder="对公司文化、团队氛围、成长空间等补充描述" />
@@ -319,10 +312,6 @@ onMounted(() => {
             <el-option label="已通过" value="APPROVED" />
             <el-option label="已拒绝" value="REJECTED" />
           </el-select>
-          <el-select v-model="tableState.visibility" placeholder="可见性" clearable>
-            <el-option label="公开" value="PUBLIC" />
-            <el-option label="仅本人" value="PRIVATE" />
-          </el-select>
           <el-button @click="resetFilters">重置筛选</el-button>
         </div>
 
@@ -339,9 +328,6 @@ onMounted(() => {
                 {{ scope.row.reviewStatus }}
               </el-tag>
             </template>
-          </el-table-column>
-          <el-table-column label="可见性" width="100">
-            <template #default="scope">{{ scope.row.publicVisible === 1 ? '公开' : '仅本人' }}</template>
           </el-table-column>
           <el-table-column prop="username" label="评价人" width="140" />
           <el-table-column prop="createdAt" label="提交时间" min-width="160" sortable="custom" />
@@ -398,17 +384,38 @@ onMounted(() => {
 <style scoped>
 .reviews-page {
   padding: 24px;
+  animation: reveal-up 0.52s ease;
 }
 
 .header {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  padding: 18px 22px;
+  border-radius: 22px;
+  background: rgba(255, 255, 255, 0.76);
+  box-shadow: var(--shadow-soft);
+  position: relative;
+  overflow: hidden;
+}
+
+.header::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: var(--theme-reviews);
+  opacity: 0.45;
+  pointer-events: none;
+}
+
+.header > * {
+  position: relative;
+  z-index: 1;
 }
 
 .header p {
   margin: 8px 0 0;
-  color: #5f7583;
+  color: #4f6980;
 }
 
 .layout {
@@ -416,6 +423,20 @@ onMounted(() => {
   display: grid;
   grid-template-columns: minmax(320px, 420px) minmax(0, 1fr);
   gap: 16px;
+  animation: reveal-up 0.6s ease;
+}
+
+.layout :deep(.el-card) {
+  border: 1px solid rgba(255, 255, 255, 0.76);
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.76);
+  box-shadow: 0 18px 32px rgba(19, 46, 72, 0.14);
+}
+
+.layout :deep(.el-card__header) {
+  background: linear-gradient(90deg, rgba(255, 122, 24, 0.22), rgba(0, 166, 251, 0.2));
+  border-bottom: 1px solid rgba(255, 255, 255, 0.72);
+  font-weight: 700;
 }
 
 .review-head {
@@ -443,7 +464,7 @@ onMounted(() => {
 }
 
 .hint {
-  color: #67808e;
+  color: #4f6b81;
   font-size: 12px;
 }
 
@@ -457,9 +478,9 @@ onMounted(() => {
 
 .timeline-card {
   padding: 10px 12px;
-  border-radius: 8px;
-  border: 1px solid #dbe5ec;
-  background: #f8fbfd;
+  border-radius: 10px;
+  border: 1px solid rgba(61, 102, 137, 0.16);
+  background: linear-gradient(140deg, #f4fbff 0%, #fdf7ff 100%);
 }
 
 .timeline-line {
@@ -470,12 +491,28 @@ onMounted(() => {
 
 .timeline-card p {
   margin: 8px 0 0;
-  color: #5f7583;
+  color: #4f6b81;
 }
 
 .status-chip {
-  color: #2f4553;
+  color: #2a4255;
   font-size: 12px;
+}
+
+.reviews-page :deep(.el-button--primary) {
+  border: none;
+  background: var(--brand-berry);
+}
+
+.reviews-page :deep(.el-input__wrapper),
+.reviews-page :deep(.el-select__wrapper),
+.reviews-page :deep(.el-textarea__inner) {
+  border-radius: 10px;
+  box-shadow: 0 0 0 1px rgba(47, 83, 117, 0.14) inset;
+}
+
+.reviews-page :deep(.el-table th.el-table__cell) {
+  background: #f4f9ff;
 }
 
 @media (max-width: 1100px) {

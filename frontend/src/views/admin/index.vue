@@ -72,6 +72,10 @@ const updateEmployment = async (row: UserItem, employedCompany?: string) => {
   }
 }
 
+const handleEmploymentChange = (row: UserItem, value: unknown) => {
+  updateEmployment(row, typeof value === 'string' ? value : undefined)
+}
+
 const updateRole = async (row: UserItem, role: string) => {
   try {
     await updateUserRoleApi(row.id, role as UserRole)
@@ -179,7 +183,7 @@ onMounted(fetchManagerData)
                 size="small"
                 clearable
                 placeholder="未设置"
-                @change="updateEmployment(scope.row, ($event as string) || undefined)"
+                @change="handleEmploymentChange(scope.row, $event)"
               />
               <span v-else>-</span>
             </template>
@@ -217,6 +221,7 @@ onMounted(fetchManagerData)
 <style scoped>
 .admin-page {
   padding: 24px;
+  animation: reveal-up 0.5s ease;
 }
 
 .header {
@@ -224,11 +229,32 @@ onMounted(fetchManagerData)
   align-items: center;
   justify-content: space-between;
   gap: 12px;
+  padding: 18px 22px;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.75);
+  border: 1px solid rgba(255, 255, 255, 0.85);
+  box-shadow: var(--shadow-soft);
+  position: relative;
+  overflow: hidden;
+}
+
+.header::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: var(--theme-admin);
+  opacity: 0.46;
+  pointer-events: none;
+}
+
+.header > * {
+  position: relative;
+  z-index: 1;
 }
 
 .header p {
   margin: 8px 0 0;
-  color: #5f7583;
+  color: #4f6b83;
 }
 
 .manager-panel {
@@ -238,9 +264,41 @@ onMounted(fetchManagerData)
   gap: 16px;
 }
 
+.manager-panel > * {
+  animation: reveal-up 0.5s ease;
+}
+
 .table-actions {
   display: flex;
   gap: 4px;
+}
+
+.admin-page :deep(.el-card) {
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.74);
+  box-shadow: 0 18px 34px rgba(16, 47, 78, 0.14);
+}
+
+.admin-page :deep(.el-card__header) {
+  background: linear-gradient(90deg, rgba(255, 186, 111, 0.36), rgba(0, 166, 251, 0.22));
+  border-bottom: 1px solid rgba(255, 255, 255, 0.72);
+  font-weight: 700;
+}
+
+.admin-page :deep(.el-button--primary) {
+  border: none;
+  background: var(--brand-ocean);
+}
+
+.admin-page :deep(.el-table th.el-table__cell) {
+  background: #f2f8ff;
+}
+
+.admin-page :deep(.el-input__wrapper),
+.admin-page :deep(.el-select__wrapper) {
+  border-radius: 10px;
+  box-shadow: 0 0 0 1px rgba(53, 89, 123, 0.14) inset;
 }
 
 @media (max-width: 960px) {

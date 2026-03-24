@@ -44,6 +44,7 @@ public class WorkLogServiceImpl implements WorkLogService {
         entity.setProjectName(request.getProjectName());
         entity.setTaskType(request.getTaskType());
         entity.setPriorityLevel(request.getPriorityLevel());
+        entity.setMoodScore(request.getMoodScore());
         entity.setStartTime(request.getStartTime());
         entity.setEndTime(request.getEndTime());
         entity.setTags(request.getTags());
@@ -125,7 +126,7 @@ public class WorkLogServiceImpl implements WorkLogService {
     public String exportCsv(SecurityUser user, LocalDate startDate, LocalDate endDate) {
         List<WorkLogResponse> list = list(user, startDate, endDate);
         StringBuilder sb = new StringBuilder();
-        sb.append("id,date,title,project,taskType,priority,workHours,tags\n");
+        sb.append("id,date,title,project,taskType,priority,moodScore,workHours,tags\n");
         for (WorkLogResponse row : list) {
             sb.append(row.getId()).append(',')
                     .append(escape(row.getWorkDate() == null ? "" : row.getWorkDate().toString())).append(',')
@@ -133,6 +134,7 @@ public class WorkLogServiceImpl implements WorkLogService {
                     .append(escape(row.getProjectName())).append(',')
                     .append(escape(row.getTaskType())).append(',')
                     .append(escape(row.getPriorityLevel())).append(',')
+                .append(row.getMoodScore() == null ? "" : row.getMoodScore()).append(',')
                     .append(row.getWorkHours() == null ? "0" : row.getWorkHours()).append(',')
                     .append(escape(row.getTags()))
                     .append('\n');
@@ -169,8 +171,8 @@ public class WorkLogServiceImpl implements WorkLogService {
 
     private WorkLogResponse toResponse(WorkLog e) {
         return new WorkLogResponse(
-                e.getId(), e.getUserId(), e.getWorkDate(), e.getTitle(), e.getContent(), e.getProjectName(),
-                e.getTaskType(), e.getPriorityLevel(), e.getStartTime(), e.getEndTime(), e.getWorkHours(),
+            e.getId(), e.getUserId(), e.getWorkDate(), e.getTitle(), e.getContent(), e.getProjectName(),
+            e.getTaskType(), e.getPriorityLevel(), e.getMoodScore(), e.getStartTime(), e.getEndTime(), e.getWorkHours(),
                 e.getTags(), e.getAttachmentUrls(), e.getCreatedAt(), e.getUpdatedAt()
         );
     }

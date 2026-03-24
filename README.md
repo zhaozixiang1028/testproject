@@ -46,6 +46,27 @@ npm run dev
 
 - http://localhost:8080/api
 
+## AI 聊天配置（百炼）
+
+后端已内置 AI 代理接口：`POST /api/ai/chat/stream`（SSE 流式）。
+
+请通过环境变量配置，不要把密钥写死在前端代码中：
+
+- `APP_AI_API_KEY`：百炼 API Key（必填）
+- `APP_AI_BASE_URL`：OpenAI 兼容网关地址（可选，默认 DashScope compatible 地址）
+- `APP_AI_MODEL`：模型名（可选，默认 `qwen-math-turbo`）
+
+Windows PowerShell 示例：
+
+```powershell
+$env:APP_AI_API_KEY="你的百炼Key"
+$env:APP_AI_MODEL="qwen-math-turbo"
+cd backend
+mvn spring-boot:run
+```
+
+前端无需配置 Key，登录后右下角可直接打开全局 AI 助手面板。
+
 ## 联调脚本
 
 Windows 一键执行（造测试数据 + 校验分页/筛选/排序 + 评价权限规则）：

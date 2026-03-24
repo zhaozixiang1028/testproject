@@ -1,6 +1,8 @@
 package com.company.dailywork.web.dto;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 
 import java.time.LocalDate;
@@ -19,6 +21,9 @@ public class WorkLogSaveRequest {
     private String projectName;
     private String taskType;
     private String priorityLevel;
+    @Min(value = 1, message = "mood score should be between 1 and 5")
+    @Max(value = 5, message = "mood score should be between 1 and 5")
+    private Integer moodScore;
     private LocalDateTime startTime;
     private LocalDateTime endTime;
     private String tags;
@@ -38,6 +43,8 @@ public class WorkLogSaveRequest {
     public void setTaskType(String taskType) { this.taskType = taskType; }
     public String getPriorityLevel() { return priorityLevel; }
     public void setPriorityLevel(String priorityLevel) { this.priorityLevel = priorityLevel; }
+    public Integer getMoodScore() { return moodScore; }
+    public void setMoodScore(Integer moodScore) { this.moodScore = moodScore; }
     public LocalDateTime getStartTime() { return startTime; }
     public void setStartTime(LocalDateTime startTime) { this.startTime = startTime; }
     public LocalDateTime getEndTime() { return endTime; }

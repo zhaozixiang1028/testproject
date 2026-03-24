@@ -93,6 +93,7 @@ CREATE TABLE IF NOT EXISTS `work_log` (
     `project_name` VARCHAR(120) DEFAULT NULL COMMENT 'Project name',
     `task_type` VARCHAR(50) DEFAULT NULL COMMENT 'Task type',
     `priority_level` VARCHAR(20) DEFAULT NULL COMMENT 'Priority level',
+    `mood_score` TINYINT DEFAULT NULL COMMENT 'Mood score (1-5)',
     `start_time` DATETIME DEFAULT NULL COMMENT 'Start time',
     `end_time` DATETIME DEFAULT NULL COMMENT 'End time',
     `work_hours` DECIMAL(5,2) DEFAULT 0.00 COMMENT 'Calculated work hours',
@@ -104,6 +105,40 @@ CREATE TABLE IF NOT EXISTS `work_log` (
     KEY `idx_work_log_user_date` (`user_id`, `work_date`),
     CONSTRAINT `fk_work_log_user` FOREIGN KEY (`user_id`) REFERENCES `sys_user` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='Daily work logs';
+
+CREATE TABLE IF NOT EXISTS `sprint_goal` (
+    `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT 'Primary key',
+    `user_id` BIGINT NOT NULL COMMENT 'User id',
+    `title` VARCHAR(120) NOT NULL COMMENT 'Goal title',
+    `description` VARCHAR(500) DEFAULT NULL COMMENT 'Goal description',
+    `related_project` VARCHAR(120) DEFAULT NULL COMMENT 'Related project name',
+    `target_hours` DECIMAL(7,2) DEFAULT 0.00 COMMENT 'Target hours',
+    `status` VARCHAR(20) NOT NULL DEFAULT 'OPEN' COMMENT 'OPEN DONE PAUSED',
+    `start_date` DATE NOT NULL COMMENT 'Start date',
+    `end_date` DATE NOT NULL COMMENT 'End date',
+    `created_at` DATETIME DEFAULT CURRENT_TIMESTAMP,
+    `updated_at` DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    PRIMARY KEY (`id`),
+    KEY `idx_sprint_goal_user` (`user_id`),
+    KEY `idx_sprint_goal_date` (`start_date`, `end_date`),
+    CONSTRAINT `fk_sprint_goal_user` FOREIGN KEY (`user_id`) REFERENCES `sys_user` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='Sprint goal board';
+
+SET @work_log_mood_col_exists = (
+    SELECT COUNT(*)
+    FROM information_schema.COLUMNS
+    WHERE TABLE_SCHEMA = DATABASE()
+      AND TABLE_NAME = 'work_log'
+      AND COLUMN_NAME = 'mood_score'
+);
+SET @work_log_mood_col_sql = IF(
+    @work_log_mood_col_exists = 0,
+    'ALTER TABLE `work_log` ADD COLUMN `mood_score` TINYINT DEFAULT NULL COMMENT ''Mood score (1-5)'' AFTER `priority_level`',
+    'SELECT 1'
+);
+PREPARE work_log_mood_col_stmt FROM @work_log_mood_col_sql;
+EXECUTE work_log_mood_col_stmt;
+DEALLOCATE PREPARE work_log_mood_col_stmt;
 
 CREATE TABLE IF NOT EXISTS `company_review` (
     `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT 'Primary key',

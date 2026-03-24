@@ -1,0 +1,52 @@
+
+> frontend@0.0.0 build
+> vue-tsc -b && vite build
+
+[36mvite v7.3.1 [32mbuilding client environment for production...[36m[39m
+transforming...
+[32m✓[39m 2545 modules transformed.
+rendering chunks...
+computing gzip size...
+[2mdist/[22m[32mindex.html                          [39m[1m[2m    0.45 kB[22m[1m[22m[2m │ gzip:   0.29 kB[22m
+[2mdist/[22m[35massets/skills-DT6HhaO1.css          [39m[1m[2m    0.62 kB[22m[1m[22m[2m │ gzip:   0.32 kB[22m
+[2mdist/[22m[35massets/retrospective-Bqwf1xB0.css   [39m[1m[2m    0.66 kB[22m[1m[22m[2m │ gzip:   0.33 kB[22m
+[2mdist/[22m[35massets/risk-radar-BceTss_B.css      [39m[1m[2m    0.66 kB[22m[1m[22m[2m │ gzip:   0.34 kB[22m
+[2mdist/[22m[35massets/review-alerts-DVTSwedB.css   [39m[1m[2m    0.67 kB[22m[1m[22m[2m │ gzip:   0.34 kB[22m
+[2mdist/[22m[35massets/index-CNGQdGkS.css           [39m[1m[2m    0.74 kB[22m[1m[22m[2m │ gzip:   0.34 kB[22m
+[2mdist/[22m[35massets/mood-Cf_aDm2K.css            [39m[1m[2m    0.75 kB[22m[1m[22m[2m │ gzip:   0.36 kB[22m
+[2mdist/[22m[35massets/report-6a-FLf1o.css          [39m[1m[2m    0.91 kB[22m[1m[22m[2m │ gzip:   0.42 kB[22m
+[2mdist/[22m[35massets/index-Bwskg7GS.css           [39m[1m[2m    1.03 kB[22m[1m[22m[2m │ gzip:   0.49 kB[22m
+[2mdist/[22m[35massets/index-BuTRJthp.css           [39m[1m[2m    1.13 kB[22m[1m[22m[2m │ gzip:   0.50 kB[22m
+[2mdist/[22m[35massets/index-CD6oiqbl.css           [39m[1m[2m    1.53 kB[22m[1m[22m[2m │ gzip:   0.64 kB[22m
+[2mdist/[22m[35massets/index-BnfpAsxf.css           [39m[1m[2m    1.72 kB[22m[1m[22m[2m │ gzip:   0.77 kB[22m
+[2mdist/[22m[35massets/index-Bla46cFE.css           [39m[1m[2m    2.35 kB[22m[1m[22m[2m │ gzip:   0.85 kB[22m
+[2mdist/[22m[35massets/index-DfJXwWKI.css           [39m[1m[2m    3.01 kB[22m[1m[22m[2m │ gzip:   0.95 kB[22m
+[2mdist/[22m[35massets/index-BGapi91D.css           [39m[1m[2m    3.74 kB[22m[1m[22m[2m │ gzip:   1.07 kB[22m
+[2mdist/[22m[35massets/index-BKKPpmjS.css           [39m[1m[2m  354.25 kB[22m[1m[22m[2m │ gzip:  48.00 kB[22m
+[2mdist/[22m[36massets/company-CMUPKbVc.js          [39m[1m[2m    0.10 kB[22m[1m[22m[2m │ gzip:   0.12 kB[22m
+[2mdist/[22m[36massets/insight-Btxq4AVw.js          [39m[1m[2m    0.54 kB[22m[1m[22m[2m │ gzip:   0.24 kB[22m
+[2mdist/[22m[36massets/index-LyGtyKDe.js            [39m[1m[2m    2.16 kB[22m[1m[22m[2m │ gzip:   1.04 kB[22m
+[2mdist/[22m[36massets/index-3qQ86NTL.js            [39m[1m[2m    2.23 kB[22m[1m[22m[2m │ gzip:   1.24 kB[22m
+[2mdist/[22m[36massets/retrospective-RvW_E35A.js    [39m[1m[2m    2.25 kB[22m[1m[22m[2m │ gzip:   1.17 kB[22m
+[2mdist/[22m[36massets/skills-YAboFuTu.js           [39m[1m[2m    2.84 kB[22m[1m[22m[2m │ gzip:   1.57 kB[22m
+[2mdist/[22m[36massets/risk-radar-Dlm0X8PP.js       [39m[1m[2m    3.13 kB[22m[1m[22m[2m │ gzip:   1.65 kB[22m
+[2mdist/[22m[36massets/mood-BGB7JuLn.js             [39m[1m[2m    3.38 kB[22m[1m[22m[2m │ gzip:   1.79 kB[22m
+[2mdist/[22m[36massets/review-alerts-pO05s936.js    [39m[1m[2m    3.50 kB[22m[1m[22m[2m │ gzip:   1.86 kB[22m
+[2mdist/[22m[36massets/index-C7KvLg0y.js            [39m[1m[2m    4.26 kB[22m[1m[22m[2m │ gzip:   1.84 kB[22m
+[2mdist/[22m[36massets/index-0jO6C9uA.js            [39m[1m[2m    5.75 kB[22m[1m[22m[2m │ gzip:   2.29 kB[22m
+[2mdist/[22m[36massets/index-DJG_cmYd.js            [39m[1m[2m    5.91 kB[22m[1m[22m[2m │ gzip:   2.46 kB[22m
+[2mdist/[22m[36massets/index-23Wlm2qH.js            [39m[1m[2m    6.11 kB[22m[1m[22m[2m │ gzip:   2.36 kB[22m
+[2mdist/[22m[36massets/index-COYodNdP.js            [39m[1m[2m   11.32 kB[22m[1m[22m[2m │ gzip:   4.33 kB[22m
+[2mdist/[22m[36massets/index-DfY4pFD0.js            [39m[1m[2m   12.64 kB[22m[1m[22m[2m │ gzip:   4.66 kB[22m
+[2mdist/[22m[36massets/purify.es-CovBOfck.js        [39m[1m[2m   22.58 kB[22m[1m[22m[2m │ gzip:   8.67 kB[22m
+[2mdist/[22m[36massets/index.es-ChMf-dS0.js         [39m[1m[2m  158.88 kB[22m[1m[22m[2m │ gzip:  53.06 kB[22m
+[2mdist/[22m[36massets/html2canvas.esm-DXEQVQnt.js  [39m[1m[2m  201.04 kB[22m[1m[22m[2m │ gzip:  47.43 kB[22m
+[2mdist/[22m[36massets/report-D-6wqxcz.js           [39m[1m[2m  391.87 kB[22m[1m[22m[2m │ gzip: 128.93 kB[22m
+[2mdist/[22m[36massets/index-BqtVPmGC.js            [39m[1m[33m1,032.66 kB[39m[22m[2m │ gzip: 343.96 kB[22m
+[2mdist/[22m[36massets/index-HRpVOA9p.js            [39m[1m[33m1,119.75 kB[39m[22m[2m │ gzip: 371.29 kB[22m
+[33m
+(!) Some chunks are larger than 500 kB after minification. Consider:
+- Using dynamic import() to code-split the application
+- Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
+- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.[39m
+[32m✓ built in 17.51s[39m

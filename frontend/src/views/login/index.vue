@@ -164,16 +164,23 @@ const backToLogin = () => {
   min-height: 100vh;
   display: grid;
   place-items: center;
-  padding: 20px;
-  background: radial-gradient(circle at 10% 20%, #d9f0ff 0%, #f7fbff 50%, #fefbf5 100%);
+  padding: 24px;
+  background:
+    radial-gradient(circle at 14% 18%, rgba(255, 122, 24, 0.36) 0%, rgba(255, 122, 24, 0) 36%),
+    radial-gradient(circle at 84% 22%, rgba(0, 166, 251, 0.34) 0%, rgba(0, 166, 251, 0) 40%),
+    radial-gradient(circle at 86% 84%, rgba(255, 77, 109, 0.24) 0%, rgba(255, 77, 109, 0) 32%),
+    linear-gradient(140deg, #fff4e9 0%, #eef8ff 44%, #f2fff6 100%);
 }
 
 .panel {
   width: min(460px, 100%);
-  background: #ffffff;
-  border-radius: 16px;
-  padding: 28px;
-  box-shadow: 0 18px 36px rgba(18, 35, 48, 0.12);
+  background: rgba(255, 255, 255, 0.76);
+  border-radius: 22px;
+  border: 1px solid rgba(255, 255, 255, 0.72);
+  backdrop-filter: blur(10px);
+  padding: 30px;
+  box-shadow: 0 24px 48px rgba(20, 43, 67, 0.18);
+  animation: float-in 0.65s ease-out;
 }
 
 .panel-top {
@@ -184,12 +191,18 @@ const backToLogin = () => {
 
 h1 {
   margin: 0;
-  font-size: 26px;
+  font-size: 30px;
+  letter-spacing: 1px;
+  background: linear-gradient(100deg, #ff7a18 0%, #ff4d6d 48%, #00a6fb 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
 }
 
 .subtitle {
   margin: 8px 0 22px;
-  color: #587184;
+  color: #4f677d;
+  font-weight: 500;
 }
 
 .submit {
@@ -214,7 +227,34 @@ h1 {
 
 .strength {
   margin-top: 8px;
-  color: #6b7f8d;
+  color: #576f84;
   font-size: 12px;
+}
+
+.panel :deep(.el-input__wrapper) {
+  border-radius: 12px;
+  box-shadow: 0 0 0 1px rgba(58, 92, 126, 0.14) inset;
+}
+
+.panel :deep(.el-button--primary) {
+  border: none;
+  background: var(--brand-ocean);
+}
+
+.panel :deep(.el-button--success) {
+  border: none;
+  background: var(--brand-sunset);
+  color: #1d2f44;
+}
+
+@keyframes float-in {
+  from {
+    opacity: 0;
+    transform: translateY(20px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
 }
 </style>

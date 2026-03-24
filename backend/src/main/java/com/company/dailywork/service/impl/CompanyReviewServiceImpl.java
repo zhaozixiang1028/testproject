@@ -57,12 +57,12 @@ public class CompanyReviewServiceImpl implements CompanyReviewService {
         entity.setSalaryScore(request.getSalaryScore());
         entity.setBalanceScore(request.getBalanceScore());
         entity.setAnonymousMode(Boolean.TRUE.equals(request.getAnonymousMode()) ? 1 : 0);
-        entity.setPublicVisible(Boolean.TRUE.equals(request.getPublicVisible()) ? 1 : 0);
+        entity.setPublicVisible(1);
         entity.setReviewContent(request.getReviewContent());
         companyReviewMapper.insert(entity);
         User reviewUser = userMapper.selectById(entity.getUserId());
         String username = reviewUser == null ? "unknown" : reviewUser.getUsername();
-        return toResponse(entity, username);
+        return toResponse(entity, username, user.getUser().getId());
     }
 
     @Override
@@ -98,11 +98,11 @@ public class CompanyReviewServiceImpl implements CompanyReviewService {
         entity.setSalaryScore(request.getSalaryScore());
         entity.setBalanceScore(request.getBalanceScore());
         entity.setAnonymousMode(Boolean.TRUE.equals(request.getAnonymousMode()) ? 1 : 0);
-        entity.setPublicVisible(Boolean.TRUE.equals(request.getPublicVisible()) ? 1 : 0);
+        entity.setPublicVisible(1);
         entity.setReviewContent(request.getReviewContent());
         companyReviewMapper.updateById(entity);
 
-        return toResponse(entity, user.getUser().getUsername());
+        return toResponse(entity, user.getUser().getUsername(), user.getUser().getId());
     }
 
     @Override
@@ -119,7 +119,7 @@ public class CompanyReviewServiceImpl implements CompanyReviewService {
         Map<Long, String> usernames = loadUsernames(list);
 
         return list.stream()
-            .map(item -> toResponse(item, usernames.getOrDefault(item.getUserId(), "unknown")))
+            .map(item -> toResponse(item, usernames.getOrDefault(item.getUserId(), "unknown"), user.getUser().getId()))
                 .toList();
     }
 
@@ -156,7 +156,7 @@ public class CompanyReviewServiceImpl implements CompanyReviewService {
 
         User reviewUser = userMapper.selectById(entity.getUserId());
         String username = reviewUser == null ? "unknown" : reviewUser.getUsername();
-        return toResponse(entity, username);
+        return toResponse(entity, username, operator.getUser().getId());
     }
 
     @Override
@@ -209,11 +209,19 @@ public class CompanyReviewServiceImpl implements CompanyReviewService {
                 .toList();
     }
 
-        private CompanyReviewResponse toResponse(CompanyReview item, String username) {
+    private CompanyReviewResponse toResponse(CompanyReview item, String username, Long viewerUserId) {
+        String displayUsername = username;
+        if (item.getAnonymousMode() != null
+                && item.getAnonymousMode() == 1
+                && viewerUserId != null
+                && !viewerUserId.equals(item.getUserId())) {
+            displayUsername = "匿名用户";
+        }
+
         return new CompanyReviewResponse(
                 item.getId(),
             item.getUserId(),
-            username,
+            displayUsername,
                 item.getCompanyName(),
                 item.getCultureScore(),
                 item.getTeamScore(),

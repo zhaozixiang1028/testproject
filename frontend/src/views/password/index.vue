@@ -75,6 +75,7 @@ const submit = async () => {
 <style scoped>
 .password-page {
   padding: 24px;
+  animation: reveal-up 0.52s ease;
 }
 
 .header {
@@ -82,16 +83,54 @@ const submit = async () => {
   justify-content: space-between;
   align-items: center;
   gap: 12px;
+  padding: 18px 22px;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.76);
+  box-shadow: var(--shadow-soft);
+  position: relative;
+  overflow: hidden;
+}
+
+.header::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: var(--theme-password);
+  opacity: 0.46;
+  pointer-events: none;
+}
+
+.header > * {
+  position: relative;
+  z-index: 1;
 }
 
 .header p {
   margin: 8px 0 0;
-  color: #5f7583;
+  color: #4f6b83;
 }
 
 .password-card {
   margin-top: 16px;
   max-width: 640px;
+  animation: reveal-up 0.62s ease;
+}
+
+.password-page :deep(.el-card) {
+  border: 1px solid rgba(255, 255, 255, 0.78);
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.78);
+  box-shadow: 0 18px 34px rgba(15, 45, 71, 0.14);
+}
+
+.password-page :deep(.el-input__wrapper) {
+  border-radius: 10px;
+  box-shadow: 0 0 0 1px rgba(56, 89, 121, 0.15) inset;
+}
+
+.password-page :deep(.el-button--primary) {
+  border: none;
+  background: var(--brand-berry);
 }
 
 .actions {

@@ -23,3 +23,7 @@ app:
     secret: MjY4OTdhYzgxN2M2ZTRiMzQ5ZGE4NjE5MWIwMWQ4NzNhOTVhMmYzNTczMWY1YjYxZjA4NTRkMDQxYjM5Y2IyNQ==
     access-token-expire-seconds: 7200
     refresh-token-expire-seconds: 604800
+  ai:
+    base-url: ${APP_AI_BASE_URL:https://dashscope.aliyuncs.com/compatible-mode/v1}
+    api-key: ${APP_AI_API_KEY:}
+    model: ${APP_AI_MODEL:qwen-math-turbo}

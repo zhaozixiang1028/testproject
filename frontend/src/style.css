@@ -1,7 +1,19 @@
 :root {
-  font-family: "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
-  color: #122330;
+  font-family: "HarmonyOS Sans SC", "Source Han Sans SC", "Microsoft YaHei", "Segoe UI", sans-serif;
+  color: #13233a;
   background: #f6f8fb;
+  --brand-sunset: linear-gradient(135deg, #ff7a18 0%, #ffb13b 38%, #ffe06a 100%);
+  --brand-ocean: linear-gradient(135deg, #00a6fb 0%, #00d4ff 45%, #72f2eb 100%);
+  --brand-berry: linear-gradient(135deg, #ff4d6d 0%, #ff758f 45%, #ff9fb2 100%);
+  --surface-glass: rgba(255, 255, 255, 0.72);
+  --shadow-soft: 0 18px 38px rgba(15, 41, 66, 0.14);
+  --shadow-pop: 0 20px 42px rgba(255, 122, 24, 0.2);
+  --theme-dashboard: linear-gradient(135deg, rgba(255, 183, 94, 0.35), rgba(65, 184, 255, 0.3));
+  --theme-admin: linear-gradient(135deg, rgba(255, 107, 107, 0.3), rgba(255, 212, 96, 0.3));
+  --theme-logs: linear-gradient(135deg, rgba(65, 184, 255, 0.3), rgba(114, 242, 235, 0.32));
+  --theme-reviews: linear-gradient(135deg, rgba(255, 122, 24, 0.28), rgba(255, 77, 109, 0.3));
+  --theme-profile: linear-gradient(135deg, rgba(82, 196, 26, 0.28), rgba(65, 184, 255, 0.3));
+  --theme-password: linear-gradient(135deg, rgba(255, 77, 109, 0.3), rgba(163, 122, 255, 0.3));
 }
 
 * {
@@ -17,4 +29,57 @@ body,
 
 body {
   min-height: 100vh;
+  color: #1c3650;
+  background:
+    radial-gradient(circle at 16% 14%, rgba(255, 184, 108, 0.34) 0%, rgba(255, 184, 108, 0) 34%),
+    radial-gradient(circle at 85% 12%, rgba(0, 166, 251, 0.28) 0%, rgba(0, 166, 251, 0) 36%),
+    radial-gradient(circle at 82% 88%, rgba(255, 77, 109, 0.2) 0%, rgba(255, 77, 109, 0) 30%),
+    linear-gradient(160deg, #fef6ee 0%, #eef9ff 42%, #f0fff9 100%);
+}
+
+#app {
+  position: relative;
+}
+
+#app::before,
+#app::after {
+  content: "";
+  position: fixed;
+  z-index: -1;
+  border-radius: 999px;
+  filter: blur(6px);
+  pointer-events: none;
+}
+
+#app::before {
+  width: 260px;
+  height: 260px;
+  right: -90px;
+  top: 90px;
+  background: radial-gradient(circle, rgba(255, 177, 59, 0.4) 0%, rgba(255, 177, 59, 0) 72%);
+}
+
+#app::after {
+  width: 300px;
+  height: 300px;
+  left: -110px;
+  bottom: 40px;
+  background: radial-gradient(circle, rgba(0, 166, 251, 0.36) 0%, rgba(0, 166, 251, 0) 70%);
+}
+
+.page-title {
+  margin: 0;
+  font-size: 32px;
+  letter-spacing: 1px;
+}
+
+@keyframes reveal-up {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }

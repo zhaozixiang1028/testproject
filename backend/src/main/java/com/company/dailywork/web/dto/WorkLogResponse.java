@@ -13,6 +13,7 @@ public class WorkLogResponse {
     private String projectName;
     private String taskType;
     private String priorityLevel;
+    private Integer moodScore;
     private LocalDateTime startTime;
     private LocalDateTime endTime;
     private BigDecimal workHours;
@@ -22,7 +23,7 @@ public class WorkLogResponse {
     private LocalDateTime updatedAt;
 
     public WorkLogResponse(Long id, Long userId, LocalDate workDate, String title, String content, String projectName,
-                           String taskType, String priorityLevel, LocalDateTime startTime, LocalDateTime endTime,
+                           String taskType, String priorityLevel, Integer moodScore, LocalDateTime startTime, LocalDateTime endTime,
                            BigDecimal workHours, String tags, String attachmentUrls,
                            LocalDateTime createdAt, LocalDateTime updatedAt) {
         this.id = id;
@@ -33,6 +34,7 @@ public class WorkLogResponse {
         this.projectName = projectName;
         this.taskType = taskType;
         this.priorityLevel = priorityLevel;
+        this.moodScore = moodScore;
         this.startTime = startTime;
         this.endTime = endTime;
         this.workHours = workHours;
@@ -50,6 +52,7 @@ public class WorkLogResponse {
     public String getProjectName() { return projectName; }
     public String getTaskType() { return taskType; }
     public String getPriorityLevel() { return priorityLevel; }
+    public Integer getMoodScore() { return moodScore; }
     public LocalDateTime getStartTime() { return startTime; }
     public LocalDateTime getEndTime() { return endTime; }
     public BigDecimal getWorkHours() { return workHours; }

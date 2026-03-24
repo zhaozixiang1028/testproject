@@ -20,6 +20,7 @@ public class WorkLog {
     private String projectName;
     private String taskType;
     private String priorityLevel;
+    private Integer moodScore;
     private LocalDateTime startTime;
     private LocalDateTime endTime;
     private BigDecimal workHours;
@@ -44,6 +45,8 @@ public class WorkLog {
     public void setTaskType(String taskType) { this.taskType = taskType; }
     public String getPriorityLevel() { return priorityLevel; }
     public void setPriorityLevel(String priorityLevel) { this.priorityLevel = priorityLevel; }
+    public Integer getMoodScore() { return moodScore; }
+    public void setMoodScore(Integer moodScore) { this.moodScore = moodScore; }
     public LocalDateTime getStartTime() { return startTime; }
     public void setStartTime(LocalDateTime startTime) { this.startTime = startTime; }
     public LocalDateTime getEndTime() { return endTime; }
