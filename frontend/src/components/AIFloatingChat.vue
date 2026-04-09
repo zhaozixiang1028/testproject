@@ -382,7 +382,7 @@ async function exportPdf() {
   position: fixed;
   right: 20px;
   bottom: 20px;
-  z-index: 3000;
+  z-index: 1800;
 }
 
 .ai-launcher {
@@ -507,6 +507,8 @@ async function exportPdf() {
   display: grid;
   grid-template-rows: auto auto 1fr auto auto;
   min-width: 0;
+  min-height: 0;
+  overflow: hidden;
 }
 
 .chat-header {
@@ -543,6 +545,7 @@ async function exportPdf() {
   display: flex;
   flex-direction: column;
   gap: 12px;
+  min-height: 0;
 }
 
 .message {
@@ -686,11 +689,13 @@ async function exportPdf() {
     width: 100%;
     height: min(82vh, 760px);
     grid-template-columns: 1fr;
+    grid-template-rows: 170px 1fr;
     bottom: 56px;
   }
 
   .ai-sessions {
     max-height: 170px;
+    overflow: auto;
   }
 }
 </style>

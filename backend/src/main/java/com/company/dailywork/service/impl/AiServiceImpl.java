@@ -34,7 +34,8 @@ public class AiServiceImpl implements AiService {
 
     @Override
     public Flux<String> streamChat(SecurityUser user, AiChatRequest request) {
-        if (aiProperties.getApiKey() == null || aiProperties.getApiKey().isBlank()) {
+        String apiKey = aiProperties.getApiKey() == null ? null : aiProperties.getApiKey().trim();
+        if (apiKey == null || apiKey.isBlank()) {
             return Flux.error(new IllegalArgumentException("AI API key is not configured"));
         }
 
@@ -71,13 +72,42 @@ public class AiServiceImpl implements AiService {
         return webClient.post()
                 .uri("/chat/completions")
                 .contentType(MediaType.APPLICATION_JSON)
-                .header(HttpHeaders.AUTHORIZATION, "Bearer " + aiProperties.getApiKey())
+            .header(HttpHeaders.AUTHORIZATION, "Bearer " + apiKey)
                 .bodyValue(payload)
                 .retrieve()
                 .bodyToFlux(String.class)
-            .onErrorMap(WebClientResponseException.Unauthorized.class,
-                ex -> new IllegalStateException("AI 服务鉴权失败，请检查 APP_AI_API_KEY 是否有效"))
+                .onErrorMap(WebClientResponseException.class,
+                        ex -> new IllegalStateException(buildUpstreamErrorMessage(ex)))
                 .transform(this::extractTokenFlux);
+    }
+
+    private String buildUpstreamErrorMessage(WebClientResponseException ex) {
+        String body = ex.getResponseBodyAsString();
+        String parsedMessage = null;
+        if (body != null && !body.isBlank()) {
+            try {
+                JsonNode root = objectMapper.readTree(body);
+                parsedMessage = root.path("message").asText(null);
+                if (parsedMessage == null || parsedMessage.isBlank()) {
+                    parsedMessage = root.path("error").path("message").asText(null);
+                }
+            } catch (Exception ignored) {
+                // Ignore json parse failure and fallback to raw body/status.
+            }
+        }
+
+        if (ex.getStatusCode().value() == 401) {
+            String detail = (parsedMessage != null && !parsedMessage.isBlank())
+                    ? parsedMessage
+                    : "请检查 APP_AI_API_KEY 与 DashScope 网关配置";
+            return "AI 上游鉴权失败(401): " + detail;
+        }
+
+        if (parsedMessage != null && !parsedMessage.isBlank()) {
+            return "AI 上游错误(" + ex.getStatusCode().value() + "): " + parsedMessage;
+        }
+
+        return "AI 上游错误(" + ex.getStatusCode().value() + ")";
     }
 
     private Flux<String> extractTokenFlux(Flux<String> rawFlux) {

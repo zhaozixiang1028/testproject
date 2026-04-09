@@ -1,6 +1,5 @@
 import type { AiChatRequestPayload } from '../types/auth'
 import { useUserStore } from '../store/modules/user'
-import router from '../router'
 
 let refreshingPromise: Promise<string> | null = null
 
@@ -14,12 +13,26 @@ function toErrorMessage(text: string) {
   }
 }
 
+function mapUnauthorizedMessage(raw: string) {
+  try {
+    const parsed = JSON.parse(raw) as { code?: number; message?: string }
+    if (parsed.code === 401 && (parsed.message || '').trim().toLowerCase() === 'unauthorized') {
+      return '登录凭证已失效，请重新登录'
+    }
+    if (parsed.message && parsed.message.trim()) {
+      return parsed.message
+    }
+  } catch {
+    // Keep fallback behavior for non-JSON responses.
+  }
+  const message = toErrorMessage(raw)
+  return message || 'AI 接口鉴权失败，请稍后重试'
+}
+
 async function refreshAccessToken() {
   const userStore = useUserStore()
   if (!userStore.refreshToken) {
-    userStore.clearSession()
-    void router.replace('/login')
-    throw new Error('登录已过期，请重新登录')
+    throw new Error('登录状态已过期，请重新登录后再使用 AI')
   }
 
   if (!refreshingPromise) {
@@ -32,22 +45,22 @@ async function refreshAccessToken() {
 
       const raw = await response.text()
       if (!response.ok) {
-        userStore.clearSession()
-        void router.replace('/login')
-        throw new Error(toErrorMessage(raw) || '刷新登录状态失败，请重新登录')
+        throw new Error(toErrorMessage(raw) || '刷新登录状态失败，请稍后重试')
       }
 
       const payload = JSON.parse(raw) as {
+        code?: number
         data?: { accessToken?: string; refreshToken?: string; role?: 'SUPER_ADMIN' | 'ADMIN' | 'EMPLOYEE' }
         message?: string
+      }
+      if (payload.code && payload.code !== 0) {
+        throw new Error(payload.message || '刷新登录状态失败，请稍后重试')
       }
       const accessToken = payload.data?.accessToken
       const refreshToken = payload.data?.refreshToken
       const role = payload.data?.role || userStore.profile?.role || 'EMPLOYEE'
       if (!accessToken || !refreshToken) {
-        userStore.clearSession()
-        void router.replace('/login')
-        throw new Error(payload.message || '刷新登录状态失败，请重新登录')
+        throw new Error(payload.message || '刷新登录状态失败，请稍后重试')
       }
 
       userStore.setTokens({ accessToken, refreshToken, role })
@@ -99,13 +112,15 @@ export async function streamChatApi(options: {
     const nextAccessToken = await refreshAccessToken()
     response = await doStreamRequest({ payload, accessToken: nextAccessToken, signal })
     if (response.status === 401) {
-      throw new Error('AI 接口鉴权失败，请稍后重试')
+      const message = await response.text()
+      throw new Error(mapUnauthorizedMessage(message))
     }
   }
 
   if (!response.ok || !response.body) {
     if (response.status === 401) {
-      throw new Error('AI 接口鉴权失败，请稍后重试')
+      const message = await response.text()
+      throw new Error(mapUnauthorizedMessage(message))
     }
     const message = await response.text()
     throw new Error(toErrorMessage(message))
