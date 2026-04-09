@@ -25,5 +25,5 @@ app:
     refresh-token-expire-seconds: 604800
   ai:
     base-url: ${APP_AI_BASE_URL:https://dashscope.aliyuncs.com/compatible-mode/v1}
-    api-key: ${APP_AI_API_KEY:}
-    model: ${APP_AI_MODEL:qwen-math-turbo}
+    api-key: ${APP_AI_API_KEY:${DASHSCOPE_API_KEY:sk-61a52f73ad1d47ce8c2c58d566485ff4}}
+    model: ${APP_AI_MODEL:qwen-plus}

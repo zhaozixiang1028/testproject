@@ -273,3 +273,14 @@ export interface AiChatRequestPayload {
   prompt: string
   messages: Array<{ role: AiRole; content: string }>
 }
+
+export interface AiConfigCheckResponse {
+  keyConfigured: boolean
+  baseUrl: string
+  model: string
+  providerReachable: boolean
+  authPassed: boolean
+  modelAvailable: boolean
+  upstreamStatus?: number | null
+  message: string
+}

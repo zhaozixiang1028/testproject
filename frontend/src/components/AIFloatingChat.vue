@@ -12,14 +12,21 @@ import {
   EditPen,
   Download,
 } from '@element-plus/icons-vue'
+import { checkAiConfigApi } from '../api/ai'
 import { useAiStore } from '../store/modules/ai'
 import { useUserStore } from '../store/modules/user'
+import type { AiConfigCheckResponse } from '../types/auth'
 
 const aiStore = useAiStore()
 const userStore = useUserStore()
 const prompt = ref('')
 const listRef = ref<HTMLElement | null>(null)
 const searchText = ref('')
+const checkingConfig = ref(false)
+const configCheckResult = ref<AiConfigCheckResponse | null>(null)
+const configCheckError = ref('')
+const configCheckTime = ref('')
+const configCheckVisible = ref(false)
 const canShowAi = computed(() => userStore.isLoggedIn)
 
 const sessions = computed(() => aiStore.sortedSessions)
@@ -165,6 +172,46 @@ function onInputKeydown(event: KeyboardEvent) {
   }
 }
 
+async function runAiConfigCheck() {
+  if (checkingConfig.value) {
+    return
+  }
+  checkingConfig.value = true
+  configCheckError.value = ''
+  try {
+    const result = await checkAiConfigApi()
+    configCheckResult.value = result
+    configCheckTime.value = new Date().toLocaleString()
+    configCheckVisible.value = true
+    if (result.authPassed && result.providerReachable && result.modelAvailable) {
+      ElMessage.success('AI 配置检查通过')
+    } else {
+      ElMessage.warning(result.message || 'AI 配置存在异常，请检查详情')
+    }
+  } catch (error: any) {
+    configCheckResult.value = null
+    configCheckError.value = error?.message || 'AI 配置自检失败'
+    configCheckVisible.value = true
+    ElMessage.error(configCheckError.value)
+  } finally {
+    checkingConfig.value = false
+  }
+}
+
+function hideConfigCheck() {
+  configCheckVisible.value = false
+}
+
+function showConfigCheck() {
+  if (configCheckResult.value || configCheckError.value) {
+    configCheckVisible.value = true
+  }
+}
+
+function boolText(value: boolean) {
+  return value ? '正常' : '异常'
+}
+
 function sanitizeFileName(name: string) {
   return name.replace(/[\\/:*?"<>|]/g, '-').trim() || 'ai-chat'
 }
@@ -308,6 +355,18 @@ async function exportPdf() {
           </header>
 
           <div class="chat-tools">
+            <button class="ghost" type="button" @click="runAiConfigCheck" :disabled="checkingConfig">
+              <el-icon><RefreshRight /></el-icon>
+              {{ checkingConfig ? '检测中...' : '配置自检' }}
+            </button>
+            <button
+              v-if="!configCheckVisible && (configCheckResult || configCheckError)"
+              class="ghost"
+              type="button"
+              @click="showConfigCheck"
+            >
+              查看自检结果
+            </button>
             <button class="ghost" type="button" @click="exportMarkdown">
               <el-icon><Download /></el-icon>
               导出 Markdown
@@ -320,6 +379,34 @@ async function exportPdf() {
               <el-icon><DocumentCopy /></el-icon>
               复制摘要
             </button>
+          </div>
+
+          <div v-if="configCheckVisible && (configCheckResult || configCheckError)" class="config-check-box">
+            <div class="config-check-header">
+              <h4>AI 配置自检</h4>
+              <button class="ghost-mini" type="button" @click="hideConfigCheck">收起</button>
+            </div>
+            <p v-if="configCheckTime" class="meta">检测时间：{{ configCheckTime }}</p>
+            <p v-if="configCheckError" class="fail">{{ configCheckError }}</p>
+            <template v-else-if="configCheckResult">
+              <p class="result-message">{{ configCheckResult.message }}</p>
+              <div class="grid">
+                <span>Key 配置</span>
+                <strong>{{ boolText(configCheckResult.keyConfigured) }}</strong>
+                <span>网关可达</span>
+                <strong>{{ boolText(configCheckResult.providerReachable) }}</strong>
+                <span>鉴权通过</span>
+                <strong>{{ boolText(configCheckResult.authPassed) }}</strong>
+                <span>模型可用</span>
+                <strong>{{ boolText(configCheckResult.modelAvailable) }}</strong>
+                <span>模型名称</span>
+                <strong>{{ configCheckResult.model || '-' }}</strong>
+                <span>网关地址</span>
+                <strong class="mono">{{ configCheckResult.baseUrl || '-' }}</strong>
+                <span>上游状态</span>
+                <strong>{{ configCheckResult.upstreamStatus ?? '-' }}</strong>
+              </div>
+            </template>
           </div>
 
           <div class="chat-messages" ref="listRef">
@@ -518,6 +605,74 @@ async function exportPdf() {
   justify-content: space-between;
   align-items: center;
   background: rgba(255, 255, 255, 0.82);
+}
+
+.config-check-box {
+  margin: 8px 16px 0;
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid rgba(148, 163, 184, 0.35);
+  background: rgba(241, 245, 249, 0.65);
+}
+
+.config-check-box h4 {
+  margin: 0;
+  font-size: 13px;
+  color: #0f172a;
+}
+
+.config-check-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.ghost-mini {
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  background: #fff;
+  color: #334155;
+  font-size: 12px;
+  padding: 2px 8px;
+  cursor: pointer;
+}
+
+.config-check-box .meta {
+  margin: 6px 0 0;
+  font-size: 12px;
+  color: #475569;
+}
+
+.config-check-box .result-message {
+  margin: 6px 0 0;
+  color: #1f2937;
+}
+
+.config-check-box .fail {
+  margin: 6px 0 0;
+  color: #dc2626;
+}
+
+.config-check-box .grid {
+  margin-top: 8px;
+  display: grid;
+  grid-template-columns: 88px 1fr;
+  column-gap: 8px;
+  row-gap: 4px;
+  font-size: 12px;
+}
+
+.config-check-box .grid span {
+  color: #64748b;
+}
+
+.config-check-box .grid strong {
+  color: #0f172a;
+  word-break: break-all;
+}
+
+.config-check-box .grid .mono {
+  font-family: Consolas, 'Courier New', monospace;
 }
 
 .chat-header h3 {
